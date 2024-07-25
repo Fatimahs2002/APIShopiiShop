@@ -2,6 +2,7 @@ const Section = require('../models/section');
 const { cloudinaryConfig, upload } = require('../cluodinaryMulter');
 const { io } = require('../io');
 
+
 const cloudinary = cloudinaryConfig;
 
 // Controller function to add an item
@@ -53,5 +54,5 @@ const getSections = async (req, res) => {
 }
 
 module.exports = {
-  addSection,getSections
+  addSection,getSections,
 };

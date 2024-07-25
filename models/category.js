@@ -7,6 +7,8 @@ const categorySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
       ref: 'Section',
   },
+
+
   });
 
   const Category =  mongoose.model('Category', categorySchema);

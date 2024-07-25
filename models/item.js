@@ -19,18 +19,12 @@ const item = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  storeId: {
+  StoreCategoryId: {
     type: mongoose.Schema.Types.ObjectId,
-      ref: 'Store',
+      ref: 'StoreCategory.js',
   },
-  categoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-  },
-  subCategoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-      ref: 'SubCategory',
-  },
+
+
   userId: {
     type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

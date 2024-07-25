@@ -1,8 +1,4 @@
 const mongoose = require('mongoose');
-
-
-
-
 const storeSchema = new mongoose.Schema({
   imageUrl: { type: String, required: false },
   imagePublicId: { type: String, required: false },
@@ -48,11 +44,7 @@ default:'usd'
     type: String,
    required: true,
   },
-  sectionId: 
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Section',
-    },
+
   approved:{
     type:Boolean,
     default:false

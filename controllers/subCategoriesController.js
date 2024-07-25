@@ -1,4 +1,4 @@
-const SubCategory = require('../models/subCategory');
+const SubCategory = require('../models/StoreCategory');
 const { cloudinaryConfig, upload } = require('../cluodinaryMulter');
 const { io } = require('../io');
 
