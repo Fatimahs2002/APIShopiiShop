@@ -5,7 +5,7 @@ const userRoutes = require("./routes/userRoutes");
 const itemRoutes = require('./routes/itemRoutes');
 const sectionRoutes = require('./routes/sectionRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
-const subCategoryRoutes = require('./routes/subCategoriesRoutes');
+const CategoryInStore = require('./routes/CategoryInStoreRoute');
 const storeRoutes = require('./routes/storeRoutes');
 // const app = express();
 const { app, server, io } = require('./io');
@@ -23,7 +23,7 @@ app.use("/users", userRoutes);
 app.use("/items",itemRoutes)
 app.use("/sections",sectionRoutes)
 app.use("/categories",categoryRoutes)
-app.use("/subCategories",subCategoryRoutes)
+app.use("/CategoryInStore",CategoryInStore);
 app.use("/stores",storeRoutes)
 const PORT = process.env.PORT || 5000;
 const MONGOOSE_URL = "mongodb+srv://adelftouni:GxVURilGvo47QzAG@cluster0.h4a0cqm.mongodb.net/starter";

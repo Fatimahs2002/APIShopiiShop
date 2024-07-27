@@ -19,9 +19,10 @@ const item = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  StoreCategoryId: {
+  CategoryInStoreId: {
     type: mongoose.Schema.Types.ObjectId,
-      ref: 'StoreCategory.js',
+      ref: 'CategoryInStore.js',
+      required: true,
   },
 
 
@@ -50,12 +51,13 @@ default:false
     type:Boolean,
     default:false
       },
-  subCategory:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'subCategory',
-  }
+     approved:{
+      type:Boolean,
+      default:false
+     }
+  
 }, { timestamps: true });
 
-const Item = mongoose.model('Itemm', item);
+const Item = mongoose.model('Item', item);
 
 module.exports = Item;

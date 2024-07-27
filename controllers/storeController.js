@@ -7,12 +7,15 @@ const cloudinary = cloudinaryConfig;
 // Controller function to add an item
 const addStore = async (req, res) => {
   try {
-    const { file } = req;
+    const { file,body: { name }  } = req;
   
     if (!file) {
       return res.status(400).json({ message: 'No image file provided!' });
     }
-
+    const existingStore = await Store.findOne({ name });
+    if (existingStore) {
+      return res.status(400).json({ message: 'Store with this name already exists!' });
+    }
     const uploadResult = await cloudinary.uploader.upload(file.path, {
       public_id: 'your_desired_public_id', // Set your desired public ID
     });
@@ -30,8 +33,7 @@ const addStore = async (req, res) => {
       reviews: req.body.reviews,
       openUntil: req.body.openUntil,
       exchangeRate: req.body.exchangeRate,
-      sectionId: req.body.sectionId,
-    //   approved : req.body.approved
+      //approved : req.body.approved
       // Other fields like reviews, rating, isPopular, and isRecommended will use default values
     });
 
