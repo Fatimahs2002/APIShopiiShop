@@ -49,6 +49,10 @@ default:'usd'
     type:Boolean,
     default:false
   },
+  userId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }
 
 },
 {timeStamp:true}

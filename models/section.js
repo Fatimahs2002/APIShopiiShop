@@ -7,6 +7,10 @@ const sectionSchema = new mongoose.Schema({
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: 'Category',
     // }
+    userId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    }
   });
 
   const Section =  mongoose.model('Section', sectionSchema);
