@@ -1,33 +1,44 @@
-const CategoryInStore = require('../models/CategoryInStore');
+const CategoryInStore = require('../models/CategoryInStore.js');
 const Item=require('../models/item');
 const { cloudinaryConfig, upload } = require('../cluodinaryMulter');
 const { io } = require('../io');
 const mongoose = require('mongoose');
 const cloudinary = cloudinaryConfig;
+const User=require('../models/user.js');
 
 // Controller function to add an item
 const addCategoryInStore = async (req, res) => {
   try {
-    const { file, body: { name, StoreId } } = req;
+    const { file, body: { name, StoreId, userId } } = req;
 
     if (!file) {
       return res.status(400).json({ message: 'No image file provided!' });
     }
 
-    const existingCategoryInStore = await CategoryInStore.findOne({ name });
+    const existingCategoryInStore = await CategoryInStore.findOne({ name, StoreId });
     if (existingCategoryInStore) {
-      return res.status(400).json({ message: 'CategoryInStore with this name already exists!' });
+      return res.status(400).json({ message: 'CategoryInStore with this name already exists in the store!' });
     }
 
     const uploadResult = await cloudinary.uploader.upload(file.path, {
       public_id: 'your_desired_public_id', // Set your desired public ID
     });
 
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found!' });
+    }
+
+    // Set approval status based on user role
+    const isApproved = user.role !== 'magazineOwner';
+
     const newCategoryInStore = new CategoryInStore({
       imageUrl: uploadResult.secure_url,
       imagePublicId: uploadResult.public_id,
       name,
-      StoreId
+      StoreId,
+      approved: isApproved,
+      userId: user._id,
     });
 
     const savedCategoryInStore = await newCategoryInStore.save();
@@ -40,6 +51,7 @@ const addCategoryInStore = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 //get category in Store
 const getCategoriesInSore = async (req, res) => {
   try {
@@ -151,7 +163,27 @@ const updateCategoryInStore = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+//aprove category in Store
+const approveCategoryInStore = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const updatedCategoryInStore= await CategoryInStore.findByIdAndUpdate(
+      id,
+      { approved: true },
+      { new: true }
+    );
+
+    if (!updatedCategoryInStore) {
+      return res.status(404).json({ message: 'Category in store  not found' });
+    }
+
+    res.status(200).json({ message: 'Category  in store approved successfully', CategoryInStore: updatedCategoryInStore });
+  } catch (error) {
+    console.error('Error approving category in store:', error.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 module.exports = {
-addCategoryInStore,getCategoriesInSore,deleteCategoryInStore,updateCategoryInStore
+addCategoryInStore,getCategoriesInSore,deleteCategoryInStore,updateCategoryInStore,approveCategoryInStore
 };

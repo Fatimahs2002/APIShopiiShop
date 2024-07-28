@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const StoreCategorySchema = new mongoose.Schema({
-    name: { type: String, required: false,default:" StoreCategory" },
+const CategoryInStoreSchema = new mongoose.Schema({
+    name: { type: String, required: false,default:"CategoryInStore" },
     imageUrl: { type: String, required: false },
     imagePublicId: { type: String, required: false },
     StoreId: {
@@ -18,6 +18,6 @@ const StoreCategorySchema = new mongoose.Schema({
     }
   });
 
-  const StoreCategory =  mongoose.model('StoreCategory', StoreCategorySchema);
+  const CategoryInStore=  mongoose.model('CategoryInStoreSchema', CategoryInStoreSchema);
 
-  module.exports = StoreCategory;
+  module.exports = CategoryInStore;
