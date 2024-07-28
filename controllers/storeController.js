@@ -4,48 +4,58 @@ const { io } = require('../io');
 const Image = require('../models/image');
 const cloudinary = cloudinaryConfig;
 var mongoose = require('mongoose');
+const User=require("../models/user.js");
 // Controller function to add an item
 const addStore = async (req, res) => {
   try {
-    const { file,body: { name }  } = req;
+    const { file, body: { name, currency, address, deliveryTime, whatTheySell, rating, reviews, openUntil, exchangeRate, userId } } = req;
   
     if (!file) {
       return res.status(400).json({ message: 'No image file provided!' });
     }
+
     const existingStore = await Store.findOne({ name });
     if (existingStore) {
       return res.status(400).json({ message: 'Store with this name already exists!' });
     }
+
     const uploadResult = await cloudinary.uploader.upload(file.path, {
       public_id: 'your_desired_public_id', // Set your desired public ID
     });
 
-    // Create a new instance of the Item model with data from the request body
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found!' });
+    }
+
+    const isApproved = user.role === 'superAdmin';
+    //const isApproved = user.role === 'admin';
+
+    // Create a new instance of the Store model with data from the request body
     const newStore = new Store({
-      imageUrl: uploadResult.secure_url, // Add image URL to the post
-      imagePublicId: uploadResult.public_id, // Add image public ID to the post
-      name: req.body.name,
-      currency: req.body.currency,
-      address: req.body.address,
-      deliveryTime: req.body.deliveryTime,
-      whatTheySell: req.body.whatTheySell,
-      rating: req.body.rating,
-      reviews: req.body.reviews,
-      openUntil: req.body.openUntil,
-      exchangeRate: req.body.exchangeRate,
-      //approved : req.body.approved
-      // Other fields like reviews, rating, isPopular, and isRecommended will use default values
+      imageUrl: uploadResult.secure_url,
+      imagePublicId: uploadResult.public_id,
+      name,
+      currency,
+      address,
+      deliveryTime,
+      whatTheySell,
+      rating,
+      reviews,
+      openUntil,
+      exchangeRate,
+      approved: isApproved,
+      userId: user._id
     });
 
-    // Save the new item to the database
+    // Save the new store to the database
     const savedStore = await newStore.save();
 
-    // Emit the 'newItem' event after saving the item
-    // console.log('New item emitted:', savedItem); // Log the emitted item data
+    // Emit the 'newStore' event after saving the store
     io.emit('newStore', savedStore);
 
-    // Respond with the saved item
-    res.status(201).json({ message: 'store added successfully', store: savedStore });
+    // Respond with the saved store
+    res.status(201).json({ message: 'Store added successfully', store: savedStore });
   } catch (error) {
     console.error('Error adding store:', error);
     res.status(500).json({ error: error.message });
