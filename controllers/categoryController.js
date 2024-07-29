@@ -2,6 +2,8 @@ const Category = require('../models/category');
 const { cloudinaryConfig, upload } = require('../cluodinaryMulter');
 const { io } = require('../io');
 const User=require('../models/user')
+
+const Section = require('../models/section');
 const cloudinary = cloudinaryConfig;
 
 // Controller function to add an item
@@ -134,6 +136,36 @@ const approveCategory = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+//get category by sectionId
+
+// Get categories by sectionId
+const getCategoryBySectionId = async (req, res) => {
+  const { sectionId } = req.params;
+
+  try {
+    // Corrected the population field to match the model field name
+    const categories = await Category.find({ sectionId })
+    if (!categories || categories.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No categories found for this section",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Categories found",
+      data: categories,
+    });
+  } catch (error) {
+    console.error('Error fetching categories by sectionId:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 module.exports = {
-  addCategory,getCategories,updateCategory,approveCategory
+  addCategory,getCategories,updateCategory,approveCategory,getCategoryBySectionId
 };
