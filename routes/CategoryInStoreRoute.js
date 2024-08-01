@@ -13,5 +13,5 @@ router.put('/approveCategoryInStore/:id',approveCategoryInStore)
 router.get('/getCategoryByStoreId/:StoreId',getCategoryByStoreId)
 // router.post("/signup", signupController)
 // router.put("/updateUser", updateUser)
-
+///fatima
 module.exports = router;
