@@ -26,7 +26,7 @@ const userSchema = mongoose.Schema({
     password: { type: String, required: false },
     role: {
         type: String,
-        enum: ['magazineOwner', 'user', 'driver', 'superAdmin'],
+        enum: ['magazineOwner', 'user', 'driver', 'superAdmin','biker'],
         default: 'user'
     },
     phoneNumber: { type: Number, required: false, default: 70000000 },

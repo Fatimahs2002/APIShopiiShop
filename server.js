@@ -1,24 +1,24 @@
-// const express = require("express");
+
 const mongoose = require('mongoose');
-// const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+
 const userRoutes = require("./routes/userRoutes");
 const itemRoutes = require('./routes/itemRoutes');
 const sectionRoutes = require('./routes/sectionRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const CategoryInStore = require('./routes/CategoryInStoreRoute');
 const storeRoutes = require('./routes/storeRoutes');
-// const app = express();
+
 const { app, server, io } = require('./io');
 
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
+app.use(cookieParser());
 
-// app.use(cors());
-// app.use(express.json());
 
-// Assuming you have defined your controller function in a separate file
-// const { updateUser } = require('./controllers/userController');
-
-// Route to handle updating user
-// app.put("/users/update", updateUser);
 app.use("/users", userRoutes);
 app.use("/items",itemRoutes)
 app.use("/sections",sectionRoutes)

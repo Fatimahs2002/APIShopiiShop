@@ -8,7 +8,19 @@ const User=require("../models/user.js");
 // Controller function to add an item
 const addStore = async (req, res) => {
   try {
-    const { file, body: { name, currency, address, deliveryTime, whatTheySell, rating, reviews, openUntil, exchangeRate, userId } } = req;
+    const { file, body: { 
+      name, 
+      currency, 
+      address, 
+      deliveryTime, 
+      whatTheySell, 
+      rating, 
+      reviews, 
+      openUntil, 
+      exchangeRate, 
+      userId, 
+      requestedCategories // Added this line
+    }} = req;
   
     if (!file) {
       return res.status(400).json({ message: 'No image file provided!' });
@@ -29,7 +41,7 @@ const addStore = async (req, res) => {
     }
 
     const isApproved = user.role === 'superAdmin';
-    //const isApproved = user.role === 'admin';
+    // const isApproved = user.role === 'admin'; // Uncomment this if you want to use admin role
 
     // Create a new instance of the Store model with data from the request body
     const newStore = new Store({
@@ -45,7 +57,8 @@ const addStore = async (req, res) => {
       openUntil,
       exchangeRate,
       approved: isApproved,
-      userId: user._id
+      userId: user._id,
+      requestedCategories // Added this line
     });
 
     // Save the new store to the database
@@ -61,6 +74,7 @@ const addStore = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 const approveStore = async (req, res) => {
   try {
@@ -159,86 +173,91 @@ const getStores = async (req, res) => {
   }
 }
 
-// const approveWithImage = async (req, res) => {
-//   const id = req.body.id;
-//   const approved = req.body.approved;
-//   const imgUrl = req.body.imageUrl;
-//   // Update the store with the sent data
-//   Store.findByIdAndUpdate(id, { approved: approved ,imageUrl: imgUrl }, { new: true })
-//    .then(updatedStore => {
-//       res.status(200).json({ message: updatedStore });
-//     })
-//    .catch(error => {
-//       res.status(500).json({ message: 'Error updating store' });
-//     });
-//   };
-// const approve = async (req, res) => {
-//   const id = req.body.id;
-//   const approved = req.body.approved;
+const approveWithImage = async (req, res) => {
+  const id = req.body.id;
+  const approved = req.body.approved;
+  const imgUrl = req.body.imageUrl;
+  // Update the store with the sent data
+  Store.findByIdAndUpdate(id, { approved: approved ,imageUrl: imgUrl }, { new: true })
+   .then(updatedStore => {
+      res.status(200).json({ message: updatedStore });
+    })
+   .catch(error => {
+      res.status(500).json({ message: 'Error updating store' });
+    });
+  };
+const approve = async (req, res) => {
+  const id = req.body.id;
+  const approved = req.body.approved;
 
-//   // Update the store with the sent data
-//   Store.findByIdAndUpdate(id, { approved: approved }, { new: true })
-//    .then(updatedStore => {
-//       res.status(200).json({ message: updatedStore });
-//     })
-//    .catch(error => {
-//       res.status(500).json({ message: 'Error updating store' });
-//     });
-// };
+  // Update the store with the sent data
+  Store.findByIdAndUpdate(id, { approved: approved }, { new: true })
+   .then(updatedStore => {
+      res.status(200).json({ message: updatedStore });
+    })
+   .catch(error => {
+      res.status(500).json({ message: 'Error updating store' });
+    });
+};
 
-// const saveBeforeUpdate = async (req, res) => {
-//   try {
-//     const { file, body: { content } } = req;
+const saveBeforeUpdate = async (req, res) => {
+  try {
+    const { file, body: { content } } = req;
 
-//     // Check if a file is provided
-//     if (!file) {
-//       return res.status(400).json({ message: 'No image file provided!' });
-//     }
+    // Check if a file is provided
+    if (!file) {
+      return res.status(400).json({ message: 'No image file provided!' });
+    }
 
-//     // Upload the image to Cloudinary
-//     const uploadResult = await cloudinary.uploader.upload(file.path, {
-//       public_id: 'your_desired_public_id', // Set your desired public ID
-//     });
+    // Upload the image to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(file.path, {
+      public_id: 'your_desired_public_id', // Set your desired public ID
+    });
 
-//     // Create a new Image document with the uploaded image URL and public ID
-//     const newImage = new Image({
-//       imageUrl: uploadResult.secure_url,
-//       imagePublicId: uploadResult.public_id
-//     });
+    // Create a new Image document with the uploaded image URL and public ID
+    const newImage = new Image({
+      imageUrl: uploadResult.secure_url,
+      imagePublicId: uploadResult.public_id
+    });
 
-//     // Save the new Image document
-//     await newImage.save();
+    // Save the new Image document
+    await newImage.save();
 
-//     // Emit an event with the new image details
-//     io.emit('newImageBeforeUpdate', newImage);
+    // Emit an event with the new image details
+    io.emit('newImageBeforeUpdate', newImage);
 
-//     // Respond with the newImage details
-//     res.status(201).json(newImage);
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+    // Respond with the newImage details
+    res.status(201).json(newImage);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
 
-// const reject= async (req, res) => {
-//   const id = req.body.id;
-//   const approved = req.body.approved;
+const reject= async (req, res) => {
+  const id = req.body.id;
+  const approved = req.body.approved;
 
-//   // Update the store with the sent data
-//   Store.findByIdAndUpdate(id, { approved: approved }, { new: true })
-//    .then(updatedStore => {
-//       res.status(200).json({ message: updatedStore });
-//     })
-//    .catch(error => {
-//       res.status(500).json({ message: 'Error updating store' });
-//     });
-// };
+  // Update the store with the sent data
+  Store.findByIdAndUpdate(id, { approved: approved }, { new: true })
+   .then(updatedStore => {
+      res.status(200).json({ message: updatedStore });
+    })
+   .catch(error => {
+      res.status(500).json({ message: error });
+      console.log(error)
+    });
+};
 
 module.exports = {
   addStore,
   getStores,
   approveStore,
-  updateStore
+  updateStore,
+  reject,
+  saveBeforeUpdate,
+  approve,
+  approveWithImage
 
 
 

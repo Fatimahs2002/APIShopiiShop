@@ -8,7 +8,7 @@ const storeSchema = new mongoose.Schema({
   },
   currency: {
     type: String,
-default:'usd'
+default:'lbp'
   },
   address: {
     type: String,
@@ -52,9 +52,13 @@ default:'usd'
   userId:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-  }
-
+  },
+requestedCategories : {
+type : String,
+required:true
 },
+},
+
 {timeStamp:true}
 );
 

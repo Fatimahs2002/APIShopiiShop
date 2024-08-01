@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Store = require('./store');
 const item = new mongoose.Schema({
   imageUrl: { type: String, required: false },
   imagePublicId: { type: String, required: false },
@@ -54,7 +54,11 @@ default:false
      approved:{
       type:Boolean,
       default:false
-     }
+     },
+     storeId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Store',
+    }
   
 }, { timestamps: true });
 

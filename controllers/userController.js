@@ -4,6 +4,8 @@ const axios = require("axios")
 const config = require("config")
 
 const User = require("../models/user")
+const { error } = require("console")
+const c = require("config")
 
 
 const signinController = async(req, res) => {
@@ -131,8 +133,8 @@ const signupController = async(req, res) => {
               return res.status(400).json({message: "User already exist!"})
 
           const hashedPassword = await bcrypt.hash(password, 12)
-
-          const result = await User.create({email, password: hashedPassword, firstName, lastName,phoneNumber,role})
+            const userName = firstName+' '+ lastName ;
+          const result = await User.create({email, password: hashedPassword, userName:userName,phoneNumber,role})
 
           const token = jwt.sign({
               email: result.email,
@@ -147,7 +149,8 @@ const signupController = async(req, res) => {
       } catch (err) {
           res
               .status(500)
-              .json({message: "Something went wrong!"})
+              .json({message: "Something went wrong!"});
+              console.log(err)
       }
 
     }
@@ -183,8 +186,29 @@ const updateUser = async (req, res) => {
     }
   };
   
-
-
+const updateUserPhoneRole = async (req, res) => {
+    const { userId, phoneNumber, role } = req.body; // Get phoneNumber, role, and userId from the request body
+  
+    try {
+      // Find the user by ID and update phoneNumber and role
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { phoneNumber, role },
+        { new: true, runValidators: true } // Return the updated document and run validation
+      );
+  
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Send the updated user data as the response
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Server error' });
+      console.log(error)
+    }
+  };
 
 
 
@@ -192,5 +216,6 @@ const updateUser = async (req, res) => {
 module.exports = {
     signinController,
     signupController,
-    updateUser
+    updateUser,
+    updateUserPhoneRole
 }
