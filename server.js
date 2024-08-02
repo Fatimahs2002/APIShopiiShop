@@ -13,7 +13,7 @@ const storeRoutes = require('./routes/storeRoutes');
 const { app, server, io } = require('./io');
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://shopiishop.web.app/',
   credentials: true
 }));
 app.use(cookieParser());
