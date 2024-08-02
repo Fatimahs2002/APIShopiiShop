@@ -9,7 +9,8 @@ app.use(express.json());
 const io = new Server(server, {
   cors: {
     origin: 'https://shopiishop.web.app/',
-    methods: ['GET', 'POST', 'PUT','DELETE']
+    methods: ['GET', 'POST', 'PUT','DELETE'],
+    credentials : true
   }
 });
 
